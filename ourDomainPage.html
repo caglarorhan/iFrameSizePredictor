@@ -10,7 +10,7 @@
         #iFrame{
             width: var(--genislik);
         }
-        secretCalculationDiv{
+        #secretCalculationDiv{
             width: var(--genislik);
             left:-10000px;
             padding:0;
@@ -31,7 +31,7 @@
 
                 // 2. plan
                 let secretDiv = document.createElement('div');
-                secretDiv.id = 'secretDiv';
+                secretDiv.id = 'secretCalculationDiv';
                 secretDiv.innerHTML = txt;
                 document.body.append(secretDiv);
                 console.log('secret div yaratildi ve body e eklendi!');
@@ -40,8 +40,11 @@
                 Object.values(childrenOfSecretDiv).forEach(item=>{
                     let thisHeight = parseInt(getComputedStyle(item).height)|0;
                     let thisTopMargin= parseInt(getComputedStyle(item).marginTop)|0;
-                    let thisBottomMargin= parseInt(getComputedStyle(item).marginBottom)|0;
-                cumulHeight+= thisHeight + thisTopMargin + thisBottomMargin;
+                    //let thisBottomMargin= parseInt(getComputedStyle(item).marginBottom)|0;
+                    let thisTopPadding= parseInt(getComputedStyle(item).paddingTop)|0;
+                    //let thisBottomPadding= parseInt(getComputedStyle(item).paddingBottom)|0;
+                //cumulHeight+= thisHeight + thisTopMargin + thisBottomMargin +thisTopPadding + thisBottomPadding;
+                cumulHeight+= thisHeight + thisTopMargin  +thisTopPadding ;
                 })
                 console.log(`Toplam yukseklik: ${cumulHeight}`);
                 document.querySelector('#iFrame').style.height=cumulHeight+'px';
