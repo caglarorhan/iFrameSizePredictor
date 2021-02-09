@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Foreign Domain Page</title>
+
+    <script>
+        let loremLetters = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique felis vel viverra vulputate. Integer tincidunt, justo ut aliquet aliquam, nisl tellus molestie justo, nec elementum ligula nulla ullamcorper metus. Donec nec rhoncus risus, vel sodales neque. Nulla nulla metus, pharetra vitae massa vitae, mollis pretium eros. In hac habitasse platea dictumst. Mauris sollicitudin consectetur lorem, quis efficitur ipsum consectetur sit amet. Nunc tellus leo, imperdiet a scelerisque eget, bibendum a felis. Integer luctus venenatis est nec ornare. Nunc ullamcorper commodo turpis, in sagittis felis semper a.`;
+
+        window.addEventListener('load',()=>{
+            let rndCount = Math.random()*10;
+            for(let x= 0; x<Math.floor(rndCount);x++){
+                let newP = document.createElement('p');
+                newP.innerHTML = loremLetters;
+                document.body.append(newP)
+            }
+        })
+    </script>
+</head>
+<body>
+
+</body>
+</html>
