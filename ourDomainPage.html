@@ -1,67 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html dir="ltr" lang='en' class="cui">
 <head>
-    <meta charset="UTF-8">
-    <title>Our Domain Page</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8" />
     <style>
         :root{
             --genislik:50%;
+            box-sizing: border-box;
         }
         #iFrame{
             width: var(--genislik);
+            box-sizing: border-box;
         }
         #secretCalculationDiv{
             width: var(--genislik);
             top:-1000px;
             padding:0;
         }
+        /* -----------------------------------------------*/
+
     </style>
     <script>
-
-        window.addEventListener('load',()=>{
-
-        });
 
         let iFrameSizePredictor = (theTarget)=>{
             let targetSourceCode = fetch(theTarget).then(response => response.text()).then(txt=>{
                 const domparser = new DOMParser();
+                // console.log(txt);
                 const doc = domparser.parseFromString(txt, 'text/html');
-                console.log('Fetch edildi');
-
-
-                // 2. plan
+                //
                 let secretDiv = document.createElement('div');
                 secretDiv.id = 'secretCalculationDiv';
-                secretDiv.innerHTML = txt;
+
+
+                //console.log(doc.body.children);
+                Object.values(doc.body.children).forEach(theChild=>{
+                    //console.log(theChild)
+                    secretDiv.append(theChild)
+                })
+
+
+
+                secretDiv.style.cssText = 'position:absolute; left: -955px; top:-156px';
+                //secretDiv.classList=['cui'];
                 document.body.append(secretDiv);
-                console.log('secret div yaratildi ve body e eklendi!');
                 let childrenOfSecretDiv =  secretDiv.children;
                 let cumulHeight = 0;
                 Object.values(childrenOfSecretDiv).forEach(item=>{
-                    let thisHeight = parseInt(getComputedStyle(item).height)|0;
-                    let thisTopMargin= parseInt(getComputedStyle(item).marginTop)|0;
-                    //let thisBottomMargin= parseInt(getComputedStyle(item).marginBottom)|0;
-                    let thisTopPadding= parseInt(getComputedStyle(item).paddingTop)|0;
-                    //let thisBottomPadding= parseInt(getComputedStyle(item).paddingBottom)|0;
-                //cumulHeight+= thisHeight + thisTopMargin + thisBottomMargin +thisTopPadding + thisBottomPadding;
-                cumulHeight+= thisHeight + thisTopMargin  +thisTopPadding ;
+                    let GCS = getComputedStyle(item);
+                    let GBC = item.getBoundingClientRect();
+                    let cleanComputedHeight = measureCleaner(getComputedStyle(item).height);
+                    let cleanComputedVerticalPaddings= measureCleaner(getComputedStyle(item).paddingTop) + measureCleaner(getComputedStyle(item).paddingBottom);
+                    let cleanComputedVerticalMargins = measureCleaner(getComputedStyle(item).marginTop) + measureCleaner(getComputedStyle(item).marginBottom);
+                    let totalCleanComputedHeight = cleanComputedHeight+cleanComputedVerticalMargins+cleanComputedVerticalPaddings;
+                    console.log(`
+                    item tag: ${item.tagName}
+                    item GBC height (margins not included, padding included): ${GBC.height}
+                    item height: ${totalCleanComputedHeight}
+                    item margins: ${cleanComputedVerticalMargins}
+                    item margins: ${cleanComputedVerticalPaddings}
+
+                    `)
+
+                    console.log(`Total Clean Height of this item: ${totalCleanComputedHeight}`);
+
+                    cumulHeight+=totalCleanComputedHeight;
+
                 })
-                console.log(`Toplam yukseklik: ${cumulHeight}`);
+                //console.log(`Toplam yukseklik: ${cumulHeight}`);
                 document.querySelector('#iFrame').style.height=cumulHeight+'px';
+                //document.querySelector('#iFrame').style.height=1700+'px';
+
+                console.log(document.querySelector('#iFrame').scrollHeight);
 
 
-
-
-
-
-
-                //1. plan -> render edilmediklerinden getComputedStyle ise yaramiyor, burada CSS varsa onlar tek tek bakilip (metinde arama ile) toplanabilir.
-                // let childrenOfBody =  doc.body.children;
-                // Object.values(childrenOfBody).forEach(item=>{
-                //     console.log(getComputedStyle(item).height);
-                // })
-
-
+                function measureCleaner(whatMeasure){
+                    let cleanComputed = parseInt(whatMeasure);
+                    return isNaN(cleanComputed)?0:cleanComputed;
+                }
 
             })
         }
@@ -73,9 +88,11 @@
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique felis vel viverra vulputate. Integer tincidunt, justo ut aliquet aliquam, nisl tellus molestie justo, nec elementum ligula nulla ullamcorper metus. Donec nec rhoncus risus, vel sodales neque. Nulla nulla metus, pharetra vitae massa vitae, mollis pretium eros. In hac habitasse platea dictumst. Mauris sollicitudin consectetur lorem, quis efficitur ipsum consectetur sit amet. Nunc tellus leo, imperdiet a scelerisque eget, bibendum a felis. Integer luctus venenatis est nec ornare. Nunc ullamcorper commodo turpis, in sagittis felis semper a.</p>
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique felis vel viverra vulputate. Integer tincidunt, justo ut aliquet aliquam, nisl tellus molestie justo, nec elementum ligula nulla ullamcorper metus. Donec nec rhoncus risus,
     vel sodales neque. Nulla nulla metus, pharetra vitae massa vitae, mollis pretium eros. In hac habitasse platea dictumst. Mauris sollicitudin consectetur lorem, quis efficitur ipsum consectetur sit amet. Nunc tellus leo, imperdiet a scelerisque eget, bibendum a felis. Integer luctus venenatis est nec ornare. Nunc ullamcorper commodo turpis, in sagittis felis semper a.</p>
-<iframe id="iFrame" src="./foreignDomainPage.html" onload="iFrameSizePredictor(this.src)">
+
+<iframe id="iFrame" src="./foreignDomainPage.html" onload="iFrameSizePredictor(this.src)" style="border:0; padding:0; margin:0;">
     before loading...
 </iframe>
+
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique felis vel viverra vulputate. Integer tincidunt, justo ut aliquet aliquam, nisl tellus molestie justo, nec elementum ligula nulla ullamcorper metus. Donec nec rhoncus risus, vel sodales neque. Nulla nulla metus, pharetra vitae massa vitae, mollis pretium eros. In hac habitasse platea dictumst. Mauris sollicitudin consectetur lorem, quis efficitur ipsum consectetur sit amet. Nunc tellus leo, imperdiet a scelerisque eget, bibendum a felis. Integer luctus venenatis est nec ornare. Nunc ullamcorper commodo turpis, in sagittis felis semper a.</p>
 
 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tristique felis vel viverra vulputate. Integer tincidunt, justo ut aliquet aliquam, nisl tellus molestie justo, nec elementum ligula nulla ullamcorper metus. Donec nec rhoncus risus, vel sodales neque. Nulla nulla metus, pharetra vitae massa vitae, mollis pretium eros. In hac habitasse platea dictumst. Mauris sollicitudin consectetur lorem, quis efficitur ipsum consectetur sit amet. Nunc tellus leo, imperdiet a scelerisque eget, bibendum a felis. Integer luctus venenatis est nec ornare. Nunc ullamcorper commodo turpis, in sagittis felis semper a.</p>
